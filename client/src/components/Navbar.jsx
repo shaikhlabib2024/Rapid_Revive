@@ -8,11 +8,18 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
+  };
+
+  const getDashboardLink = () => {
+    if (!user) return '/login';
+    if (user.role === 'admin') return '/admin';
+    if (user.role === 'garage_owner') return '/dashboard/garage';
+    return '/dashboard/user';
   };
 
   return (
-    <nav className="bg-slate-900/80 backdrop-blur-md border-b border-slate-800/80 sticky top-0 z-40">
+    <nav className="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 font-black text-lg text-white tracking-tight">
           <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
@@ -23,11 +30,23 @@ export default function Navbar() {
           <Link to="/" className="hover:text-red-400 transition">Home</Link>
           <Link to="/services" className="hover:text-red-400 transition">Services & Guides</Link>
           <Link to="/how-it-works" className="hover:text-red-400 transition">How It Works</Link>
+
+          {user && (
+            <Link to={getDashboardLink()} className="text-red-400 hover:text-red-300 font-bold underline">
+              {user.role === 'admin' ? '🛡️ Admin Panel' : user.role === 'garage_owner' ? '🔧 Garage Portal' : '🚘 Driver Portal'}
+            </Link>
+          )}
+
+          {user && user.role === 'car_owner' && (
+            <Link to="/dashboard/user/vehicles" className="hover:text-slate-100 transition">
+              My Vehicles
+            </Link>
+          )}
           
           {user ? (
             <div className="flex items-center gap-3 border-l border-slate-800 pl-6">
               <span className="text-[11px] text-slate-400 font-mono">
-                {user.fullName} ({user.role})
+                👤 {user.fullName}
               </span>
               <button 
                 onClick={handleLogout} 
