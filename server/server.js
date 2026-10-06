@@ -22,10 +22,19 @@ app.use('/api/sos', sosRoutes);
 app.use('/api/garage', garageRoutes);
 app.use('/api/admin', adminRoutes);
 
+app.get('/api', (req, res) => {
+  res.send({ status: 'Online', message: 'Rapid-Revive Serverless API Running on Vercel' });
+});
+
 app.get('/', (req, res) => {
   res.send({ status: 'Online', message: 'Rapid-Revive API Server Running' });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Rapid-Revive Server running on port ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`🚀 Rapid-Revive Server running on port ${PORT}`);
+  });
+}
+
+// Export for Vercel Serverless Functions
+module.exports = app;
