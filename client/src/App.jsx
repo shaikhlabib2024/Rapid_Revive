@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ProtectedRoute from './components/ProtectedRoute';
 
 import HeroPage from './pages/HeroPage';
 import ServicesPage from './pages/ServicesPage';
@@ -23,16 +24,57 @@ export default function App() {
           <Navbar />
           <main className="flex-grow">
             <Routes>
+              {/* Public Routes */}
               <Route path="/" element={<HeroPage />} />
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/how-it-works" element={<HowItWorksPage />} />
               <Route path="/login" element={<LoginPage />} />
               
-              <Route path="/dashboard/user" element={<CarOwnerDashboard />} />
-              <Route path="/dashboard/user/vehicles" element={<MyVehicles />} />
-              <Route path="/dashboard/garage" element={<GarageDashboard />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/licenses" element={<LicenseAudit />} />
+              {/* Car Owner Routes */}
+              <Route 
+                path="/dashboard/user" 
+                element={
+                  <ProtectedRoute allowedRoles={['car_owner']}>
+                    <CarOwnerDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/dashboard/user/vehicles" 
+                element={
+                  <ProtectedRoute allowedRoles={['car_owner']}>
+                    <MyVehicles />
+                  </ProtectedRoute>
+                } 
+              />
+
+              {/* Garage Owner Routes */}
+              <Route 
+                path="/dashboard/garage" 
+                element={
+                  <ProtectedRoute allowedRoles={['garage_owner']}>
+                    <GarageDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+
+              {/* System Admin Routes */}
+              <Route 
+                path="/admin" 
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/admin/licenses" 
+                element={
+                  <ProtectedRoute allowedRoles={['admin']}>
+                    <LicenseAudit />
+                  </ProtectedRoute>
+                } 
+              />
             </Routes>
           </main>
           <Footer />

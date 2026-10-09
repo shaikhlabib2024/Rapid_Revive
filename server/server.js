@@ -16,11 +16,13 @@ const authRoutes = require('./routes/auth.routes');
 const sosRoutes = require('./routes/sos.routes');
 const garageRoutes = require('./routes/garage.routes');
 const adminRoutes = require('./routes/admin.routes');
+const vehicleRoutes = require('./routes/vehicle.routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/sos', sosRoutes);
 app.use('/api/garage', garageRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/vehicles', vehicleRoutes);
 
 app.get('/api', (req, res) => {
   res.send({ status: 'Online', message: 'Rapid-Revive Serverless API Running on Vercel' });

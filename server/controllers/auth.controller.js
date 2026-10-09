@@ -2,6 +2,8 @@ const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const JWT_SECRET = process.env.JWT_SECRET || 'rapid_revive_super_secret_jwt_key_2026';
+
 exports.register = async (req, res) => {
   try {
     const { fullName, email, password, phoneNumber, role, garageName, address, tradeLicenseNo, latitude, longitude } = req.body;
@@ -20,15 +22,20 @@ exports.register = async (req, res) => {
 
     const userId = userResult.insertId;
 
-    // If garage owner, create garage entry
+    // If garage owner, create garage entry with varied coordinates if not provided
     if (role === 'garage_owner') {
+      const randomOffsetLat = (Math.random() - 0.5) * 0.015;
+      const randomOffsetLng = (Math.random() - 0.5) * 0.015;
+      const garageLat = latitude ? parseFloat(latitude) : (23.8103 + randomOffsetLat);
+      const garageLng = longitude ? parseFloat(longitude) : (90.4125 + randomOffsetLng);
+
       await db.query(
         'INSERT INTO garages (user_id, garage_name, address, latitude, longitude, trade_license_no, is_verified, is_online) VALUES (?, ?, ?, ?, ?, ?, FALSE, TRUE)',
-        [userId, garageName || fullName + "'s Garage", address || 'Main Road', latitude || 23.8103, longitude || 90.4125, tradeLicenseNo || 'TL-PENDING']
+        [userId, garageName || fullName + "'s Garage", address || 'Bashundhara R/A, Dhaka', garageLat, garageLng, tradeLicenseNo || `TL-${Date.now().toString().slice(-4)}`]
       );
     }
 
-    const token = jwt.sign({ userId, role: role || 'car_owner' }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
+    const token = jwt.sign({ userId, role: role || 'car_owner' }, JWT_SECRET, { expiresIn: '7d' });
 
     res.status(201).json({
       success: true,
@@ -55,7 +62,7 @@ exports.login = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid credentials.' });
     }
 
-    const token = jwt.sign({ userId: user.user_id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
+    const token = jwt.sign({ userId: user.user_id, role: user.role }, JWT_SECRET, { expiresIn: '7d' });
 
     res.json({
       success: true,
