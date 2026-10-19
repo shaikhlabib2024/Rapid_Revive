@@ -14,8 +14,8 @@ export default function Navbar() {
   const getDashboardLink = () => {
     if (!user) return '/login';
     if (user.role === 'admin') return '/admin';
-    if (user.role === 'garage_owner') return '/dashboard/garage';
-    return '/dashboard/user';
+    if (user.role === 'garage_owner') return '/garage';
+    return '/driver';
   };
 
   return (
@@ -33,12 +33,12 @@ export default function Navbar() {
 
           {user && (
             <Link to={getDashboardLink()} className="text-red-400 hover:text-red-300 font-bold underline">
-              {user.role === 'admin' ? '🛡️ Admin Panel' : user.role === 'garage_owner' ? '🔧 Garage Portal' : '🚘 Driver Portal'}
+              {user.role === 'admin' ? '🛡️ Admin Panel' : user.role === 'garage_owner' ? '🔧 Garage Portal' : '🚘 Driver Cockpit'}
             </Link>
           )}
 
           {user && user.role === 'car_owner' && (
-            <Link to="/dashboard/user/vehicles" className="hover:text-slate-100 transition">
+            <Link to="/driver/vehicles" className="hover:text-slate-100 transition">
               My Vehicles
             </Link>
           )}

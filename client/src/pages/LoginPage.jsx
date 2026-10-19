@@ -22,8 +22,8 @@ export default function LoginPage() {
       }
 
       if (role === 'admin') navigate('/admin');
-      else if (role === 'garage_owner') navigate('/dashboard/garage');
-      else navigate('/dashboard/user');
+      else if (role === 'garage_owner') navigate('/garage');
+      else navigate('/driver');
     } catch (err) {
       // Fallback demo session if API DB is offline
       handleDemoLogin(role);
@@ -33,7 +33,7 @@ export default function LoginPage() {
   const handleDemoLogin = (selectedRole) => {
     const demoUser = {
       id: Date.now(),
-      fullName: selectedRole === 'admin' ? 'System Administrator' : selectedRole === 'garage_owner' ? 'MotorFix Owner' : 'Alex (Car Owner)',
+      fullName: selectedRole === 'admin' ? 'System Administrator' : selectedRole === 'garage_owner' ? 'MotorFix Workshop' : 'Alex (Car Owner)',
       email: form.email || `${selectedRole}@rapidrevive.com`,
       role: selectedRole
     };
@@ -41,8 +41,8 @@ export default function LoginPage() {
     login(demoUser, 'demo_jwt_token_2026');
 
     if (selectedRole === 'admin') navigate('/admin');
-    else if (selectedRole === 'garage_owner') navigate('/dashboard/garage');
-    else navigate('/dashboard/user');
+    else if (selectedRole === 'garage_owner') navigate('/garage');
+    else navigate('/driver');
   };
 
   return (

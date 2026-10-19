@@ -7,7 +7,7 @@ export default function ProtectedRoute({ children, allowedRoles }) {
 
   if (loading) {
     return (
-      <div className="min-h-[50vh] flex items-center justify-center text-slate-400 text-sm">
+      <div className="min-h-screen flex items-center justify-center bg-slate-950 text-slate-400 text-sm">
         Verifying authorization...
       </div>
     );
@@ -18,10 +18,10 @@ export default function ProtectedRoute({ children, allowedRoles }) {
   }
 
   if (allowedRoles && !allowedRoles.includes(user.role)) {
-    // Redirect to their respective role dashboard if unauthorized for this route
+    // Redirect to their respective dedicated role portal if unauthorized for this route
     if (user.role === 'admin') return <Navigate to="/admin" replace />;
-    if (user.role === 'garage_owner') return <Navigate to="/dashboard/garage" replace />;
-    return <Navigate to="/dashboard/user" replace />;
+    if (user.role === 'garage_owner') return <Navigate to="/garage" replace />;
+    return <Navigate to="/driver" replace />;
   }
 
   return children;
