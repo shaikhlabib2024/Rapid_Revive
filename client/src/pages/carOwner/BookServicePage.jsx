@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 export default function BookServicePage() {
   const [selectedGarage, setSelectedGarage] = useState('MotorFix Workshop (Bashundhara R/A)');
-  const [selectedService, setSelectedService] = useState('Oil & Filter Change');
+  const [selectedService, setSelectedService] = useState('Engine Oil & Filter Change (Total Quartz)');
   const [date, setDate] = useState('2026-10-25');
   const [timeSlot, setTimeSlot] = useState('10:00 AM - 11:30 AM');
   const [confirmedBooking, setConfirmedBooking] = useState(null);
@@ -14,11 +14,11 @@ export default function BookServicePage() {
   ];
 
   const services = [
-    { name: 'Oil & Filter Change', price: '$35.00' },
-    { name: 'Brake Pad Inspection & Replacement', price: '$55.00' },
-    { name: 'Complete Engine Diagnostic Tune-Up', price: '$75.00' },
-    { name: 'AC Servicing & Gas Refill', price: '$45.00' },
-    { name: 'Suspension & Alignment Check', price: '$40.00' }
+    { name: 'Engine Oil & Filter Change (Total Quartz)', price: '৳2,800 BDT' },
+    { name: 'Front & Rear Brake Pad Servicing', price: '৳1,800 BDT' },
+    { name: 'Complete OBD-II Diagnostic Scan & Tune-Up', price: '৳1,500 BDT' },
+    { name: 'AC Master Servicing & R134a Gas Refill', price: '৳2,500 BDT' },
+    { name: 'Suspension Bushing & Wheel Alignment', price: '৳1,200 BDT' }
   ];
 
   const timeSlots = [
@@ -43,8 +43,8 @@ export default function BookServicePage() {
   return (
     <div className="max-w-4xl mx-auto space-y-6 text-slate-100">
       <div>
-        <h1 className="text-2xl font-bold text-white">Book Routine Maintenance</h1>
-        <p className="text-xs text-slate-400 mt-1">Schedule workshop appointments with anti-double-booking slot protection.</p>
+        <h1 className="text-2xl font-bold text-white">Book Routine Workshop Maintenance</h1>
+        <p className="text-xs text-slate-400 mt-1">Schedule service slots with anti-double-booking protection in Dhaka.</p>
       </div>
 
       {confirmedBooking && (
@@ -67,7 +67,7 @@ export default function BookServicePage() {
                 key={i}
                 type="button"
                 onClick={() => setSelectedGarage(g.name)}
-                className={`p-3.5 rounded-xl border text-left text-xs font-bold transition ${
+                className={`p-3.5 rounded-2xl border text-left text-xs font-bold transition ${
                   selectedGarage === g.name
                     ? 'border-red-600 bg-red-950/50 text-white shadow-sm'
                     : 'border-slate-800 bg-slate-950 text-slate-400 hover:text-white'
@@ -84,14 +84,14 @@ export default function BookServicePage() {
         </div>
 
         <div>
-          <label className="text-xs font-bold text-slate-300 block mb-2">2. Select Maintenance Service</label>
+          <label className="text-xs font-bold text-slate-300 block mb-2">2. Select Maintenance Package</label>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {services.map((s, i) => (
               <button
                 key={i}
                 type="button"
                 onClick={() => setSelectedService(s.name)}
-                className={`p-3 rounded-xl border flex justify-between items-center text-xs font-bold transition ${
+                className={`p-3 rounded-2xl border flex justify-between items-center text-xs font-bold transition ${
                   selectedService === s.name
                     ? 'border-red-600 bg-red-950/50 text-white'
                     : 'border-slate-800 bg-slate-950 text-slate-400 hover:text-white'

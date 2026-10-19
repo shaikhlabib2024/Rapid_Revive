@@ -6,7 +6,15 @@ import { AuthContext } from '../context/AuthContext';
 export default function LoginPage() {
   const [isRegister, setIsRegister] = useState(false);
   const [role, setRole] = useState('car_owner');
-  const [form, setForm] = useState({ fullName: '', email: '', password: '', phoneNumber: '', garageName: '', tradeLicenseNo: '' });
+  const [form, setForm] = useState({ 
+    fullName: '', 
+    email: '', 
+    password: '', 
+    phoneNumber: '', 
+    garageName: '', 
+    tradeLicenseNo: '',
+    nidNumber: '' 
+  });
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
@@ -33,9 +41,16 @@ export default function LoginPage() {
   const handleDemoLogin = (selectedRole) => {
     const demoUser = {
       id: Date.now(),
-      fullName: selectedRole === 'admin' ? 'System Administrator' : selectedRole === 'garage_owner' ? 'MotorFix Workshop' : 'Alex (Car Owner)',
+      fullName: selectedRole === 'admin' ? 'System Administrator' : selectedRole === 'garage_owner' ? 'MotorFix Workshop' : 'Alex Rivera',
       email: form.email || `${selectedRole}@rapidrevive.com`,
-      role: selectedRole
+      phoneNumber: '01711-234567',
+      role: selectedRole,
+      garageName: selectedRole === 'garage_owner' ? 'MotorFix Workshop' : undefined,
+      tradeLicenseNo: selectedRole === 'garage_owner' ? 'TL-2026-9901' : undefined,
+      nidNumber: selectedRole === 'garage_owner' ? 'NID-1984269104882' : undefined,
+      address: 'Block C, Main Road, Bashundhara R/A, Dhaka',
+      latitude: 23.8103,
+      longitude: 90.4125
     };
 
     login(demoUser, 'demo_jwt_token_2026');
@@ -46,51 +61,62 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="max-w-md mx-auto my-12 bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl text-slate-100 space-y-6">
-      <div className="text-center">
+    <div className="max-w-md mx-auto my-12 bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl text-slate-100 space-y-6">
+      <div className="text-center space-y-1">
         <h1 className="text-2xl font-black text-white">{isRegister ? 'Create Account' : 'Sign In'}</h1>
-        <p className="text-xs text-slate-400 mt-1">Access Rapid-Revive Platform</p>
+        <p className="text-xs text-slate-400">Access Rapid-Revive Platform</p>
       </div>
 
       {/* ROLE SWITCHER */}
-      <div className="flex bg-slate-950 p-1 rounded-xl border border-slate-800">
-        <button type="button" onClick={() => setRole('car_owner')} className={`w-1/3 py-2 text-xs font-bold rounded-lg ${role === 'car_owner' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400'}`}>Car Owner</button>
-        <button type="button" onClick={() => setRole('garage_owner')} className={`w-1/3 py-2 text-xs font-bold rounded-lg ${role === 'garage_owner' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400'}`}>Garage</button>
-        <button type="button" onClick={() => setRole('admin')} className={`w-1/3 py-2 text-xs font-bold rounded-lg ${role === 'admin' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400'}`}>Admin</button>
+      <div className="flex bg-slate-950 p-1 rounded-2xl border border-slate-800">
+        <button type="button" onClick={() => setRole('car_owner')} className={`w-1/3 py-2 text-xs font-bold rounded-xl transition ${role === 'car_owner' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400'}`}>Car Owner</button>
+        <button type="button" onClick={() => setRole('garage_owner')} className={`w-1/3 py-2 text-xs font-bold rounded-xl transition ${role === 'garage_owner' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400'}`}>Garage</button>
+        <button type="button" onClick={() => setRole('admin')} className={`w-1/3 py-2 text-xs font-bold rounded-xl transition ${role === 'admin' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400'}`}>Admin</button>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-3.5">
         {isRegister && (
           <div>
             <label className="text-xs font-semibold text-slate-300">Full Name</label>
-            <input required type="text" value={form.fullName} onChange={(e) => setForm({...form, fullName: e.target.value})} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs mt-1 text-white focus:outline-none focus:border-red-500" />
+            <input required type="text" value={form.fullName} onChange={(e) => setForm({...form, fullName: e.target.value})} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs mt-1 text-white focus:outline-none focus:border-rose-500" />
           </div>
         )}
 
         <div>
           <label className="text-xs font-semibold text-slate-300">Email Address</label>
-          <input required type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs mt-1 text-white focus:outline-none focus:border-red-500" />
+          <input required type="email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs mt-1 text-white focus:outline-none focus:border-rose-500" />
         </div>
 
         <div>
           <label className="text-xs font-semibold text-slate-300">Password</label>
-          <input required type="password" value={form.password} onChange={(e) => setForm({...form, password: e.target.value})} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs mt-1 text-white focus:outline-none focus:border-red-500" />
+          <input required type="password" value={form.password} onChange={(e) => setForm({...form, password: e.target.value})} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs mt-1 text-white focus:outline-none focus:border-rose-500" />
         </div>
+
+        {isRegister && (
+          <div>
+            <label className="text-xs font-semibold text-slate-300">Mobile Phone Number</label>
+            <input required type="text" placeholder="e.g. 01711-234567" value={form.phoneNumber} onChange={(e) => setForm({...form, phoneNumber: e.target.value})} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs mt-1 text-white focus:outline-none focus:border-rose-500" />
+          </div>
+        )}
 
         {isRegister && role === 'garage_owner' && (
           <>
             <div>
               <label className="text-xs font-semibold text-slate-300">Garage Business Name</label>
-              <input required type="text" value={form.garageName} onChange={(e) => setForm({...form, garageName: e.target.value})} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs mt-1 text-white focus:outline-none focus:border-red-500" />
+              <input required type="text" value={form.garageName} onChange={(e) => setForm({...form, garageName: e.target.value})} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs mt-1 text-white focus:outline-none focus:border-amber-500" />
             </div>
             <div>
               <label className="text-xs font-semibold text-slate-300">Trade License No.</label>
-              <input required type="text" value={form.tradeLicenseNo} onChange={(e) => setForm({...form, tradeLicenseNo: e.target.value})} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs mt-1 text-white focus:outline-none focus:border-red-500" />
+              <input required type="text" placeholder="e.g. TL-2026-9901" value={form.tradeLicenseNo} onChange={(e) => setForm({...form, tradeLicenseNo: e.target.value})} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs mt-1 text-white focus:outline-none focus:border-amber-500" />
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-slate-300">National ID (NID) No.</label>
+              <input required type="text" placeholder="e.g. NID-1984269104882" value={form.nidNumber} onChange={(e) => setForm({...form, nidNumber: e.target.value})} className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs mt-1 text-white focus:outline-none focus:border-amber-500" />
             </div>
           </>
         )}
 
-        <button type="submit" className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl text-xs transition shadow-md">
+        <button type="submit" className="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl text-xs transition shadow-md">
           {isRegister ? 'Register Account' : 'Sign In'}
         </button>
       </form>
@@ -99,13 +125,13 @@ export default function LoginPage() {
       <div className="pt-4 border-t border-slate-800 text-center space-y-2">
         <p className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">⚡ Quick 1-Click Demo Login:</p>
         <div className="flex gap-2 justify-center">
-          <button onClick={() => handleDemoLogin('car_owner')} className="px-3 py-1.5 bg-slate-950 border border-slate-800 hover:border-slate-700 text-xs font-semibold text-slate-300 rounded-lg">
+          <button onClick={() => handleDemoLogin('car_owner')} className="px-3 py-1.5 bg-slate-950 border border-slate-800 hover:border-slate-700 text-xs font-semibold text-slate-300 rounded-xl">
             🚘 Car Owner
           </button>
-          <button onClick={() => handleDemoLogin('garage_owner')} className="px-3 py-1.5 bg-slate-950 border border-slate-800 hover:border-slate-700 text-xs font-semibold text-slate-300 rounded-lg">
+          <button onClick={() => handleDemoLogin('garage_owner')} className="px-3 py-1.5 bg-slate-950 border border-slate-800 hover:border-slate-700 text-xs font-semibold text-slate-300 rounded-xl">
             🔧 Garage
           </button>
-          <button onClick={() => handleDemoLogin('admin')} className="px-3 py-1.5 bg-slate-950 border border-slate-800 hover:border-slate-700 text-xs font-semibold text-slate-300 rounded-lg">
+          <button onClick={() => handleDemoLogin('admin')} className="px-3 py-1.5 bg-slate-950 border border-slate-800 hover:border-slate-700 text-xs font-semibold text-slate-300 rounded-xl">
             🛡️ Admin
           </button>
         </div>

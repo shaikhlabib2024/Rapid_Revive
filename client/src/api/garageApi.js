@@ -14,3 +14,13 @@ export const updateJobStatus = async (requestId, status) => {
   const response = await axiosClient.post('/garage/update-job', { requestId, status });
   return response.data;
 };
+
+export const updateGarageLocation = async (locationData) => {
+  const response = await axiosClient.post('/garage/update-location', locationData);
+  return response.data;
+};
+
+export const getVerifiedGarages = async () => {
+  const response = await axiosClient.get('/garage/verified');
+  return response.data;
+};

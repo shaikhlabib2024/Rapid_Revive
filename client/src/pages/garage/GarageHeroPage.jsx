@@ -8,48 +8,48 @@ export default function GarageHeroPage() {
   const capabilities = [
     {
       title: 'Live Emergency Dispatch Radar',
-      desc: 'Receive real-time pop-up notifications for nearby stranded motorists with vehicle model, phone, and GPS position.',
+      desc: 'Receive real-time pop-up notifications for nearby stranded motorists with vehicle model, phone, and exact landmark.',
       icon: '🚨',
       link: '/garage/dispatch',
       cta: 'Open Dispatch Radar',
-      color: 'border-amber-800/80 hover:border-amber-500'
+      color: 'border-amber-900/40 hover:border-amber-500'
     },
     {
-      title: 'Mechanic Assignment & Lifecycles',
+      title: 'Mechanic Deployment & Lifecycles',
       desc: 'Deploy field technicians, provide driver contact info, and transition job status from Dispatched to Completed.',
       icon: '🔧',
       link: '/garage/jobs',
       cta: 'Manage Active Jobs',
-      color: 'border-blue-800/80 hover:border-blue-500'
+      color: 'border-blue-900/40 hover:border-blue-500'
     },
     {
-      title: 'Service Catalog & Base Rates',
-      desc: 'Configure your workshop service menu (towing rates, jump starts, tire changes, oil servicing, OBD-II checks).',
-      icon: '📋',
-      link: '/garage/services',
-      cta: 'Edit Service Menu',
-      color: 'border-emerald-800/80 hover:border-emerald-500'
+      title: 'Pin Workshop Location on Map',
+      desc: 'Share and update your exact workshop GPS coordinates so drivers in your area can instantly find your garage.',
+      icon: '📍',
+      link: '/garage/profile',
+      cta: 'Pin Location & Profile',
+      color: 'border-emerald-900/40 hover:border-emerald-500'
     },
     {
-      title: 'Earnings & Financial Ledger',
-      desc: 'Track daily/monthly revenue generated from completed roadside dispatches and routine appointments.',
+      title: 'BDT Earnings & Financial Ledger',
+      desc: 'Track gross daily/monthly income in ৳ BDT generated from completed roadside dispatches and routine appointments.',
       icon: '💰',
       link: '/garage/earnings',
       cta: 'View Financial Ledger',
-      color: 'border-purple-800/80 hover:border-purple-500'
+      color: 'border-purple-900/40 hover:border-purple-500'
     }
   ];
 
   const steps = [
     {
       num: '01',
-      title: 'Stay Online During Shift',
-      desc: 'Keep your status toggled to "ONLINE" so the platform algorithm can match your workshop to nearby emergency tickets.'
+      title: 'Stay Online & Pin GPS Location',
+      desc: 'Keep your status toggle set to "LIVE ON RADAR" and pin your workshop GPS coordinates so algorithms can match you.'
     },
     {
       num: '02',
       title: 'Accept Incoming SOS Calls',
-      desc: 'When an emergency audio alert pops up, review distance and vehicle problem, then click "Accept" to lock in the job.'
+      desc: 'When an emergency audio alert pops up, review distance and customer landmark, then click "Accept" to lock in the job.'
     },
     {
       num: '03',
@@ -59,39 +59,39 @@ export default function GarageHeroPage() {
     {
       num: '04',
       title: 'Complete Work & Record Invoicing',
-      desc: 'Mark the job as "Completed" once vehicle is repaired. The automated digital invoice records your distance-based revenue.'
+      desc: 'Mark the job as "Completed" once the vehicle is repaired. The automated digital invoice records your revenue in ৳ BDT.'
     }
   ];
 
   return (
     <div className="space-y-10 py-4">
       {/* GARAGE HERO BANNER */}
-      <section className="bg-gradient-to-r from-amber-950/80 via-slate-900 to-slate-900 border border-amber-900/60 p-8 md:p-12 rounded-3xl shadow-2xl relative overflow-hidden">
+      <section className="bg-gradient-to-r from-amber-950/50 via-slate-900 to-slate-900 border border-slate-800 p-8 md:p-12 rounded-3xl shadow-xl relative overflow-hidden">
         <div className="max-w-3xl space-y-4">
-          <div className="inline-flex items-center gap-2 bg-amber-900/40 border border-amber-700/60 text-amber-300 px-3.5 py-1 rounded-full text-xs font-bold">
+          <div className="inline-flex items-center gap-2 bg-amber-950/80 border border-amber-800/80 text-amber-300 px-3.5 py-1 rounded-full text-xs font-bold">
             <span>🔧</span> Authorized Workshop Console
           </div>
 
           <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
-            Welcome, <span className="text-amber-500">{user?.fullName || 'Workshop Partner'}</span>!
+            Welcome, <span className="text-amber-500">{user?.garageName || user?.fullName || 'Workshop Partner'}</span>!
           </h1>
 
           <p className="text-slate-300 text-sm md:text-base leading-relaxed">
-            Your centralized garage operations command hub. Accept urgent roadside dispatch orders within Dhaka & Bashundhara, deploy mechanics, manage your service catalog, and grow your automotive repair business.
+            Your centralized garage operations command hub. Accept urgent roadside dispatch orders across Dhaka, pin your exact workshop location on the map, deploy mechanics, and manage your automotive service revenue in ৳ BDT.
           </p>
 
           <div className="flex flex-wrap gap-3 pt-2">
             <Link
               to="/garage/dispatch"
-              className="bg-amber-600 hover:bg-amber-700 text-white font-extrabold px-6 py-3 rounded-xl shadow-lg transition text-xs flex items-center gap-2 animate-pulse"
+              className="bg-amber-600 hover:bg-amber-700 text-white font-extrabold px-6 py-3 rounded-xl shadow-lg transition text-xs flex items-center gap-2"
             >
               🚨 MONITOR DISPATCH RADAR
             </Link>
             <Link
-              to="/garage/jobs"
+              to="/garage/profile"
               className="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold px-5 py-3 rounded-xl transition text-xs flex items-center gap-2"
             >
-              🔧 MANAGE CURRENT JOBS
+              📍 PIN WORKSHOP ON MAP
             </Link>
           </div>
         </div>
@@ -106,9 +106,9 @@ export default function GarageHeroPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {capabilities.map((c, i) => (
-            <div key={i} className={`bg-slate-900/90 border ${c.color} p-6 rounded-2xl shadow-lg transition flex flex-col justify-between space-y-4 group`}>
+            <div key={i} className={`bg-slate-900/90 border ${c.color} p-6 rounded-3xl shadow-lg transition flex flex-col justify-between space-y-4 group`}>
               <div className="space-y-3">
-                <span className="text-3xl p-3 bg-slate-950 rounded-xl inline-block group-hover:scale-110 transition">{c.icon}</span>
+                <span className="text-3xl p-3 bg-slate-950 rounded-2xl inline-block group-hover:scale-110 transition">{c.icon}</span>
                 <h3 className="text-base font-bold text-white">{c.title}</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">{c.desc}</p>
               </div>

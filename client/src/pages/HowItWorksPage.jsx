@@ -12,7 +12,7 @@ export default function HowItWorksPage() {
           How Rapid-Revive Serves Drivers & Workshop Owners
         </h1>
         <p className="max-w-2xl mx-auto text-sm text-slate-400 leading-relaxed">
-          A digitized ecosystem designed to eliminate unpredictable roadside wait times, prevent scams, provide transparent distance pricing, and grow local garage businesses.
+          A digitized ecosystem designed to eliminate unpredictable roadside wait times, prevent scams, provide transparent distance pricing in ৳ BDT, and grow local garage businesses.
         </p>
       </section>
 
@@ -28,9 +28,9 @@ export default function HowItWorksPage() {
 
           <div className="space-y-4">
             <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-1">
-              <h3 className="text-sm font-bold text-white">1. 1-Click Geolocation Emergency SOS</h3>
+              <h3 className="text-sm font-bold text-white">1. 1-Click GPS SOS + Landmark Sharing</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                The browser API automatically captures your exact GPS coordinates so you don't have to guess where you are stranded.
+                The browser captures your precise GPS coordinates while letting you specify your road number or landmark (e.g. "Near Evercare Hospital, Bashundhara").
               </p>
             </div>
 
@@ -42,21 +42,21 @@ export default function HowItWorksPage() {
             </div>
 
             <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-1">
-              <h3 className="text-sm font-bold text-white">3. Transparent Fare Estimation</h3>
+              <h3 className="text-sm font-bold text-white">3. Transparent BDT Fare Estimation</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Anti-scam formula calculates exact costs: <code className="text-amber-400">Total = Base Fee + (Distance in KM × Per-KM Rate)</code>.
+                Anti-scam formula calculates exact costs: <code className="text-amber-400">Total = Base Callout (৳400 BDT) + (Distance in KM × ৳45/km)</code>.
               </p>
             </div>
 
             <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-1">
               <h3 className="text-sm font-bold text-white">4. Live Route & ETA Tracking</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Track your assigned mechanic's vehicle en-route on the map with status timeline updates.
+                Track your assigned mechanic's vehicle en-route on the map with real-time status timeline updates.
               </p>
             </div>
           </div>
 
-          <Link to="/login" className="block text-center bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl text-xs transition">
+          <Link to="/login" className="block text-center bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 rounded-xl text-xs transition shadow-lg">
             Register as Car Owner
           </Link>
         </div>
@@ -65,7 +65,7 @@ export default function HowItWorksPage() {
           <div className="flex items-center gap-3">
             <span className="text-3xl">🔧</span>
             <div>
-              <h2 className="text-xl font-bold text-white">For Garage Owners & Mechanics</h2>
+              <h2 className="text-xl font-bold text-white">For Garage Owners & Workshops</h2>
               <p className="text-xs text-slate-400">Streamline dispatches and expand business revenue</p>
             </div>
           </div>
@@ -74,28 +74,28 @@ export default function HowItWorksPage() {
             <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-1">
               <h3 className="text-sm font-bold text-white">1. Instant SOS Dispatch Popup Notifications</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Garages receive real-time audio and visual popups for nearby stranded motorists with vehicle info and GPS coordinates.
+                Garages receive real-time audio and visual popups for nearby stranded motorists with vehicle info, landmark, and GPS position.
               </p>
             </div>
 
             <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-1">
-              <h3 className="text-sm font-bold text-white">2. Acceptance & Auto-Rerouting Controls</h3>
+              <h3 className="text-sm font-bold text-white">2. Workshop Location Pinning on Map</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Garages have the power to Accept or Reject calls. Rejecting automatically reroutes the SOS ticket to the next nearest garage.
+                Workshops can share and update their live GPS location to pin their workshop on customer maps for instant matching.
               </p>
             </div>
 
             <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-1">
-              <h3 className="text-sm font-bold text-white">3. Trade License Verification Badge</h3>
+              <h3 className="text-sm font-bold text-white">3. Dual Verification: Trade License & NID</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Admins audit submitted business trade licenses, giving verified workshops a trust badge on the map.
+                Admins audit submitted municipal Trade Licenses and owner National IDs (NID), granting workshops a verified trust badge.
               </p>
             </div>
 
             <div className="p-4 bg-slate-950 border border-slate-800 rounded-2xl space-y-1">
-              <h3 className="text-sm font-bold text-white">4. Mechanic Assignment & Financial Logs</h3>
+              <h3 className="text-sm font-bold text-white">4. Tactile Online Toggle & BDT Ledger</h3>
               <p className="text-xs text-slate-400 leading-relaxed">
-                Assign field mechanics with contact numbers to active jobs and track total monthly earnings & digital invoices.
+                Intuitive sliding switch to pause/resume dispatches and track total daily and monthly income in ৳ BDT.
               </p>
             </div>
           </div>

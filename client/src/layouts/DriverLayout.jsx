@@ -14,7 +14,7 @@ export default function DriverLayout() {
   const navClass = ({ isActive }) =>
     `px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
       isActive
-        ? 'bg-red-600 text-white shadow-sm'
+        ? 'bg-rose-600 text-white shadow-sm'
         : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
     }`;
 
@@ -26,16 +26,16 @@ export default function DriverLayout() {
           {/* BRAND & ROLE BADGE */}
           <div className="flex items-center gap-3">
             <Link to="/driver" className="flex items-center gap-2 font-black text-lg text-white tracking-tight">
-              <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse"></span>
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
               Rapid-Revive
             </Link>
-            <span className="bg-red-950/80 border border-red-800/80 text-red-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+            <span className="bg-rose-950/80 border border-rose-800/80 text-rose-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
               Car Owner Portal
             </span>
           </div>
 
           {/* DRIVER PORTAL NAVIGATION TABS */}
-          <nav className="hidden md:flex items-center gap-2">
+          <nav className="hidden md:flex items-center gap-1.5">
             <NavLink to="/driver" end className={navClass}>
               <span>🏠</span> Overview
             </NavLink>
@@ -46,10 +46,13 @@ export default function DriverLayout() {
               <span>🚘</span> My Vehicles
             </NavLink>
             <NavLink to="/driver/booking" className={navClass}>
-              <span>🔧</span> Book Maintenance
+              <span>🔧</span> Book Service
             </NavLink>
             <NavLink to="/driver/invoices" className={navClass}>
               <span>🧾</span> Invoices
+            </NavLink>
+            <NavLink to="/driver/profile" className={navClass}>
+              <span>👤</span> My Profile
             </NavLink>
           </nav>
 
@@ -57,15 +60,15 @@ export default function DriverLayout() {
           <div className="flex items-center gap-3">
             <Link 
               to="/driver/sos" 
-              className="bg-red-600 hover:bg-red-700 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-lg shadow transition flex items-center gap-1.5 animate-pulse"
+              className="bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold px-3.5 py-1.5 rounded-lg shadow transition flex items-center gap-1.5"
             >
               <span>🚨</span> SOS Quick Call
             </Link>
 
             <div className="hidden sm:flex items-center gap-2 border-l border-slate-800 pl-3">
-              <span className="text-xs text-slate-300 font-semibold">
+              <Link to="/driver/profile" className="text-xs text-slate-300 hover:text-white font-semibold">
                 {user?.fullName || 'Driver'}
-              </span>
+              </Link>
               <button
                 onClick={handleLogout}
                 className="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-2.5 py-1 rounded-lg border border-slate-700 transition"

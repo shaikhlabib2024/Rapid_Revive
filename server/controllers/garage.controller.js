@@ -16,7 +16,8 @@ exports.getIncomingRequests = async (req, res) => {
     const [requests] = await db.query(
       `SELECT sr.*, u.full_name, u.phone_number FROM service_requests sr 
        JOIN users u ON sr.user_id = u.user_id 
-       WHERE sr.garage_id = ? AND sr.status IN ('Pending', 'Accepted', 'Dispatched')`,
+       WHERE sr.garage_id = ? AND sr.status IN ('Pending', 'Accepted', 'Dispatched')
+       ORDER BY sr.request_id DESC`,
       [garageId]
     );
     res.json({ success: true, requests });
@@ -30,6 +31,35 @@ exports.updateJobStatus = async (req, res) => {
     const { requestId, status } = req.body;
     await db.query('UPDATE service_requests SET status = ? WHERE request_id = ?', [status, requestId]);
     res.json({ success: true, status });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+// Update garage location coordinates and address for live map pinning
+exports.updateGarageLocation = async (req, res) => {
+  try {
+    const { garageId, latitude, longitude, address } = req.body;
+    await db.query(
+      'UPDATE garages SET latitude = ?, longitude = ?, address = COALESCE(?, address) WHERE garage_id = ?',
+      [parseFloat(latitude), parseFloat(longitude), address, garageId]
+    );
+    res.json({
+      success: true,
+      message: 'Workshop location pinned successfully.',
+      location: { latitude, longitude, address }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
+exports.getAllVerifiedGarages = async (req, res) => {
+  try {
+    const [garages] = await db.query(
+      'SELECT garage_id, garage_name, address, latitude, longitude, is_online, trade_license_no, nid_number FROM garages WHERE is_verified = TRUE'
+    );
+    res.json({ success: true, garages });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

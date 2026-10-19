@@ -47,7 +47,7 @@ export default function GarageLayout() {
           </div>
 
           {/* GARAGE NAVIGATION TABS */}
-          <nav className="hidden md:flex items-center gap-2">
+          <nav className="hidden md:flex items-center gap-1.5">
             <NavLink to="/garage" end className={navClass}>
               <span>🏠</span> Overview
             </NavLink>
@@ -63,26 +63,39 @@ export default function GarageLayout() {
             <NavLink to="/garage/earnings" className={navClass}>
               <span>💰</span> Earnings
             </NavLink>
+            <NavLink to="/garage/profile" className={navClass}>
+              <span>📍</span> Workshop & Pin Map
+            </NavLink>
           </nav>
 
-          {/* OPERATIONAL ONLINE TOGGLE & LOGOUT */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleToggleOnline}
-              className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition border flex items-center gap-1.5 ${
-                isOnline
-                  ? 'bg-emerald-950/80 border-emerald-700 text-emerald-400'
-                  : 'bg-rose-950/80 border-rose-700 text-rose-400'
-              }`}
-            >
-              <span className={`w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-400 animate-ping' : 'bg-rose-500'}`}></span>
-              {isOnline ? 'ONLINE' : 'OFFLINE'}
-            </button>
+          {/* TACTILE ONLINE/OFFLINE TOGGLE SWITCH */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2.5 bg-slate-950 border border-slate-800 px-3 py-1 rounded-2xl">
+              <span className="text-[11px] font-bold text-slate-300 hidden sm:inline">
+                {isOnline ? '🟢 Live on Radar' : '⏸️ Shift Paused'}
+              </span>
+              
+              {/* SLIDING TOGGLE SWITCH */}
+              <button
+                type="button"
+                onClick={handleToggleOnline}
+                title={isOnline ? "Click to Pause Dispatches" : "Click to Go Online"}
+                className={`w-12 h-6 flex items-center rounded-full p-0.5 cursor-pointer transition-colors duration-300 focus:outline-none ${
+                  isOnline ? 'bg-emerald-600' : 'bg-slate-700'
+                }`}
+              >
+                <div
+                  className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform duration-300 ${
+                    isOnline ? 'translate-x-6' : 'translate-x-0'
+                  }`}
+                />
+              </button>
+            </div>
 
             <div className="hidden sm:flex items-center gap-2 border-l border-slate-800 pl-3">
-              <span className="text-xs text-slate-300 font-semibold">
+              <Link to="/garage/profile" className="text-xs text-slate-300 hover:text-white font-semibold">
                 {user?.fullName || 'MotorFix Garage'}
-              </span>
+              </Link>
               <button
                 onClick={handleLogout}
                 className="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-2.5 py-1 rounded-lg border border-slate-700 transition"

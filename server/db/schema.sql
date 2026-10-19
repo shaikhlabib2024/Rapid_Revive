@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. GARAGES TABLE
+-- 2. GARAGES TABLE (With Trade License and National ID / NID)
 CREATE TABLE IF NOT EXISTS garages (
     garage_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS garages (
     latitude DECIMAL(10, 8) NOT NULL,
     longitude DECIMAL(11, 8) NOT NULL,
     trade_license_no VARCHAR(100) NOT NULL,
+    nid_number VARCHAR(50) NOT NULL,
     is_verified BOOLEAN DEFAULT FALSE,
     is_online BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
@@ -46,7 +47,7 @@ CREATE TABLE IF NOT EXISTS services (
     FOREIGN KEY (garage_id) REFERENCES garages(garage_id) ON DELETE CASCADE
 );
 
--- 5. SERVICE_REQUESTS TABLE
+-- 5. SERVICE_REQUESTS TABLE (With Exact Location Name / Landmark)
 CREATE TABLE IF NOT EXISTS service_requests (
     request_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -55,6 +56,7 @@ CREATE TABLE IF NOT EXISTS service_requests (
     request_type ENUM('SOS', 'Maintenance') DEFAULT 'SOS',
     user_lat DECIMAL(10, 8) NOT NULL,
     user_long DECIMAL(11, 8) NOT NULL,
+    location_name VARCHAR(255) DEFAULT 'Bashundhara R/A, Dhaka',
     issue_description TEXT,
     status ENUM('Pending', 'Accepted', 'Dispatched', 'Completed', 'Cancelled') DEFAULT 'Pending',
     estimated_cost DECIMAL(10, 2),
@@ -70,7 +72,7 @@ CREATE TABLE IF NOT EXISTS invoices (
     request_id INT NOT NULL,
     total_amount DECIMAL(10, 2) NOT NULL,
     payment_status ENUM('Unpaid', 'Paid', 'Simulated_Success') DEFAULT 'Unpaid',
-    payment_method VARCHAR(50) DEFAULT 'Cash',
+    payment_method VARCHAR(50) DEFAULT 'Cash on Delivery (BDT)',
     issued_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (request_id) REFERENCES service_requests(request_id) ON DELETE CASCADE
 );

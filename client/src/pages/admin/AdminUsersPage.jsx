@@ -9,9 +9,9 @@ export default function AdminUsersPage() {
   ]);
 
   const [garages, setGarages] = useState([
-    { id: 201, name: 'MotorFix Workshop', owner: 'Kabir Hossain', address: 'Block C, Bashundhara', status: 'Verified', license: 'TL-2026-9901' },
-    { id: 202, name: 'Apex Auto Care', owner: 'Mahmud Hasan', address: '300 Feet Road, Dhaka', status: 'Verified', license: 'TL-2026-9043' },
-    { id: 203, name: 'Dhaka City Towing', owner: 'Shakil Mia', address: 'Block G, Bashundhara', status: 'Under Review', license: 'TL-2026-8812' }
+    { id: 201, name: 'MotorFix Workshop', owner: 'Kabir Hossain', address: 'Block C, Bashundhara', status: 'Verified', license: 'TL-2026-9901', nid: 'NID-1985261049912' },
+    { id: 202, name: 'Apex Auto Care', owner: 'Mahmud Hasan', address: '300 Feet Road, Dhaka', status: 'Verified', license: 'TL-2026-9043', nid: 'NID-1991261099431' },
+    { id: 203, name: 'Dhaka City Towing', owner: 'Shakil Mia', address: 'Block G, Bashundhara', status: 'Under Review', license: 'TL-2026-8812', nid: 'NID-1980261088319' }
   ]);
 
   const toggleUserStatus = (id) => {
@@ -30,10 +30,10 @@ export default function AdminUsersPage() {
           <p className="text-xs text-slate-400 mt-1">Supervise registered driver accounts and verified partner workshops.</p>
         </div>
 
-        <div className="flex bg-slate-900 border border-slate-800 p-1 rounded-xl">
+        <div className="flex bg-slate-900 border border-slate-800 p-1 rounded-2xl">
           <button
             onClick={() => setActiveTab('drivers')}
-            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition ${
+            className={`px-4 py-1.5 rounded-xl text-xs font-bold transition ${
               activeTab === 'drivers' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -41,7 +41,7 @@ export default function AdminUsersPage() {
           </button>
           <button
             onClick={() => setActiveTab('garages')}
-            className={`px-4 py-1.5 rounded-lg text-xs font-bold transition ${
+            className={`px-4 py-1.5 rounded-xl text-xs font-bold transition ${
               activeTab === 'garages' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -51,7 +51,7 @@ export default function AdminUsersPage() {
       </div>
 
       {activeTab === 'drivers' ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl shadow-xl overflow-hidden">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-bold">
               <tr>
@@ -82,7 +82,7 @@ export default function AdminUsersPage() {
                   <td className="p-4 text-right">
                     <button
                       onClick={() => toggleUserStatus(u.id)}
-                      className="text-[11px] font-bold px-3 py-1 rounded-lg transition border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300"
+                      className="text-[11px] font-bold px-3 py-1 rounded-xl transition border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300"
                     >
                       {u.status === 'Active' ? 'Suspend' : 'Activate'}
                     </button>
@@ -93,15 +93,15 @@ export default function AdminUsersPage() {
           </table>
         </div>
       ) : (
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl shadow-xl overflow-hidden">
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-bold">
               <tr>
                 <th className="p-4">Garage ID</th>
                 <th className="p-4">Workshop Name</th>
                 <th className="p-4">Owner</th>
+                <th className="p-4">Trade License & NID</th>
                 <th className="p-4">Address</th>
-                <th className="p-4">Trade License</th>
                 <th className="p-4">Status</th>
                 <th className="p-4 text-right">Moderation</th>
               </tr>
@@ -112,8 +112,11 @@ export default function AdminUsersPage() {
                   <td className="p-4 font-mono font-bold text-white">#{g.id}</td>
                   <td className="p-4 font-bold text-white">{g.name}</td>
                   <td className="p-4 text-slate-300">{g.owner}</td>
+                  <td className="p-4 space-y-1">
+                    <span className="font-mono text-amber-400 font-bold block text-[11px]">{g.license}</span>
+                    <span className="font-mono text-blue-400 font-bold block text-[11px]">{g.nid}</span>
+                  </td>
                   <td className="p-4 text-slate-400">{g.address}</td>
-                  <td className="p-4 font-mono text-amber-400">{g.license}</td>
                   <td className="p-4">
                     <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
                       g.status === 'Verified' ? 'bg-emerald-950/80 border-emerald-700 text-emerald-400' : 'bg-amber-950/80 border-amber-700 text-amber-400'
@@ -124,7 +127,7 @@ export default function AdminUsersPage() {
                   <td className="p-4 text-right">
                     <button
                       onClick={() => toggleGarageStatus(g.id)}
-                      className="text-[11px] font-bold px-3 py-1 rounded-lg transition border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300"
+                      className="text-[11px] font-bold px-3 py-1 rounded-xl transition border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300"
                     >
                       {g.status === 'Verified' ? 'Revoke' : 'Re-verify'}
                     </button>

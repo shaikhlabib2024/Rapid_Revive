@@ -21,6 +21,7 @@ import CarOwnerDashboard from './pages/carOwner/CarOwnerDashboard';
 import MyVehicles from './pages/carOwner/MyVehicles';
 import BookServicePage from './pages/carOwner/BookServicePage';
 import DriverInvoicesPage from './pages/carOwner/DriverInvoicesPage';
+import DriverProfilePage from './pages/carOwner/DriverProfilePage';
 
 // Garage Owner Portal Pages
 import GarageHeroPage from './pages/garage/GarageHeroPage';
@@ -28,6 +29,7 @@ import GarageDashboard from './pages/garage/GarageDashboard';
 import GarageJobsPage from './pages/garage/GarageJobsPage';
 import GarageServicesPage from './pages/garage/GarageServicesPage';
 import GarageEarningsPage from './pages/garage/GarageEarningsPage';
+import GarageProfilePage from './pages/garage/GarageProfilePage';
 
 // System Administrator Portal Pages
 import AdminHeroPage from './pages/admin/AdminHeroPage';
@@ -67,6 +69,7 @@ export default function App() {
             <Route path="vehicles" element={<MyVehicles />} />
             <Route path="booking" element={<BookServicePage />} />
             <Route path="invoices" element={<DriverInvoicesPage />} />
+            <Route path="profile" element={<DriverProfilePage />} />
           </Route>
 
           {/* ========================================================
@@ -85,6 +88,7 @@ export default function App() {
             <Route path="jobs" element={<GarageJobsPage />} />
             <Route path="services" element={<GarageServicesPage />} />
             <Route path="earnings" element={<GarageEarningsPage />} />
+            <Route path="profile" element={<GarageProfilePage />} />
           </Route>
 
           {/* ========================================================
