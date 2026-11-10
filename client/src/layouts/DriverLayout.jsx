@@ -26,9 +26,9 @@ export default function DriverLayout() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* BRAND & ROLE BADGE */}
           <div className="flex items-center gap-3">
-            <Link to="/driver" className="flex items-center gap-2.5 font-black text-lg text-white tracking-tight">
-              <img src={logoWhite} alt="Rapid-Revive logo" className="h-7 w-auto object-contain shrink-0" />
-              <span>Rapid-Revive</span>
+            <Link to="/driver" className="flex items-center gap-2.5 font-black text-lg text-white tracking-tight whitespace-nowrap shrink-0">
+              <img src={logoWhite} alt="Rapid Revive logo" className="h-7 w-auto object-contain shrink-0" />
+              <span>Rapid Revive</span>
             </Link>
             <span className="bg-rose-950/80 border border-rose-800/80 text-rose-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
               Car Owner Portal

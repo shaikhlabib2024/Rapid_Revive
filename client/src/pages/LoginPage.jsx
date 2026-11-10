@@ -53,7 +53,7 @@ export default function LoginPage() {
     <div className="max-w-md mx-auto my-12 bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl text-slate-100 space-y-6">
       <div className="text-center space-y-1">
         <h1 className="text-2xl font-black text-white">{isRegister ? 'Create Account' : 'Sign In'}</h1>
-        <p className="text-xs text-slate-400">Access Rapid-Revive Platform</p>
+        <p className="text-xs text-slate-400">Access Rapid Revive Platform</p>
       </div>
 
       {/* ROLE SWITCHER */}

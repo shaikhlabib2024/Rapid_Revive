@@ -69,9 +69,9 @@ export default function GarageLayout() {
       <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/garage" className="flex items-center gap-2.5 font-black text-lg text-white tracking-tight">
-              <img src={logoWhite} alt="Rapid-Revive logo" className="h-7 w-auto object-contain shrink-0" />
-              <span>Rapid-Revive</span>
+            <Link to="/garage" className="flex items-center gap-2.5 font-black text-lg text-white tracking-tight whitespace-nowrap shrink-0">
+              <img src={logoWhite} alt="Rapid Revive logo" className="h-7 w-auto object-contain shrink-0" />
+              <span>Rapid Revive</span>
             </Link>
             <span className="bg-amber-950/80 border border-amber-800/80 text-amber-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
               Workshop Console

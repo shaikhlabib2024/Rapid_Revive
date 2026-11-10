@@ -28,7 +28,7 @@ export default function HeroPage() {
           </h1>
 
           <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-xl">
-            Rapid-Revive connects drivers with verified nearby garages across Dhaka & Bashundhara through real-time GPS dispatching and transparent distance pricing.
+            Rapid Revive connects drivers with verified nearby garages across Dhaka & Bashundhara through real-time GPS dispatching and transparent distance pricing.
           </p>
 
           <div className="flex flex-wrap gap-3 pt-2">
@@ -113,7 +113,7 @@ export default function HeroPage() {
       <section id="how-it-works" className="max-w-6xl mx-auto px-6 bg-slate-900 border border-slate-800 rounded-3xl p-8 md:p-12 space-y-8">
         <div className="text-center max-w-2xl mx-auto space-y-2">
           <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">Platform Ecosystem</span>
-          <h2 className="text-2xl md:text-3xl font-black text-white">How Rapid-Revive Helps Car Owners & Garages</h2>
+          <h2 className="text-2xl md:text-3xl font-black text-white">How Rapid Revive Helps Car Owners & Garages</h2>
           <p className="text-xs text-slate-400">Connecting drivers in need with local verified workshops in real-time.</p>
         </div>
 

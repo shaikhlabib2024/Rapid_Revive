@@ -77,7 +77,7 @@ export default function AdminHeroPage() {
           </h1>
 
           <p className="text-slate-300 text-sm md:text-base leading-relaxed">
-            Welcome to the centralized governance center of Rapid-Revive. Review workshop license applications, supervise real-time emergency dispatches across Dhaka & Bashundhara, and adjust core platform parameters.
+            Welcome to the centralized governance center of Rapid Revive. Review workshop license applications, supervise real-time emergency dispatches across Dhaka & Bashundhara, and adjust core platform parameters.
           </p>
 
           <div className="flex flex-wrap gap-3 pt-2">

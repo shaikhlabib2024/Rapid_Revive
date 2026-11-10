@@ -12,7 +12,7 @@ export default function ServicesPage() {
       symptoms: ['Engine does not crank at all', 'Metal clunking noises', 'Transmission fluid leak', 'Post-collision mobility loss'],
       solutionSteps: [
         'Pull over safely to the road shoulder and turn on your hazard emergency lights.',
-        'Trigger Rapid-Revive 1-Click SOS from your phone to send GPS coordinates.',
+        'Trigger Rapid Revive 1-Click SOS from your phone to send GPS coordinates.',
         'Our system matches the nearest flatbed tow truck in Bashundhara / Dhaka.',
         'Professional mechanic arrives, safely winches your vehicle onto the hydraulic flatbed, and transports it to your preferred verified workshop.'
       ]
@@ -26,7 +26,7 @@ export default function ServicesPage() {
       symptoms: ['Rapid clicking sound when turning the key', 'Dim headlights and dashboard indicators', 'Vehicle sat idle for prolonged time'],
       solutionSteps: [
         'Verify transmission is in Park/Neutral with the emergency brake engaged.',
-        'Request Rapid-Revive Mobile Battery Dispatch.',
+        'Request Rapid Revive Mobile Battery Dispatch.',
         'Mechanic tests battery voltage with a digital multimeter and alternator output.',
         'Performs jump start using heavy-duty booster cables or replaces old battery on-site with a brand-new unit.'
       ]
@@ -40,7 +40,7 @@ export default function ServicesPage() {
       symptoms: ['Vehicle pulling severely to one side', 'Thumping sound while driving', 'Visible nail or tire deflation'],
       solutionSteps: [
         'Steer vehicle onto a flat, non-sloped ground away from oncoming traffic.',
-        'Dispatch Rapid-Revive mobile tire mechanic.',
+        'Dispatch Rapid Revive mobile tire mechanic.',
         'Mechanic jacks up vehicle, removes damaged wheel, and mounts your spare donut or installs plug repair.',
         'Checks tire pressure (PSI) on all 4 wheels before you resume driving.'
       ]
@@ -54,7 +54,7 @@ export default function ServicesPage() {
       symptoms: ['Engine sputtering and losing RPMs', 'Fuel gauge on empty indicator', 'Fuel pump humming loudly'],
       solutionSteps: [
         'Turn off ignition immediately to prevent fuel pump dry-running damage.',
-        'Select "Fuel Delivery" on Rapid-Revive SOS.',
+        'Select "Fuel Delivery" on Rapid Revive SOS.',
         'Dispatcher delivers 5-10 Liters of Octane, Diesel, or CNG assistance directly to your location.',
         'Primes the fuel system and verifies engine restart.'
       ]
@@ -67,7 +67,7 @@ export default function ServicesPage() {
       problem: 'Keys locked inside the vehicle or electronic key fob malfunction.',
       symptoms: ['Doors auto-locked with key in ignition', 'Key fob battery dead', 'Key snapped in lock cylinder'],
       solutionSteps: [
-        'Request Lockout Specialist through Rapid-Revive.',
+        'Request Lockout Specialist through Rapid Revive.',
         'Verified locksmith arrives with non-destructive air-wedge and long-reach tools.',
         'Safely unlocks door without scratching paint or damaging weatherstripping.',
         'Replaces key fob battery if required.'
@@ -98,7 +98,7 @@ export default function ServicesPage() {
           Vehicle Breakdown Solutions & Step-by-Step Fixes
         </h1>
         <p className="max-w-2xl mx-auto text-sm text-slate-400 leading-relaxed">
-          Learn how Rapid-Revive diagnoses common roadside breakdowns, what symptoms to look for, and the exact steps our verified mechanics perform.
+          Learn how Rapid Revive diagnoses common roadside breakdowns, what symptoms to look for, and the exact steps our verified mechanics perform.
         </p>
       </section>
 
@@ -133,7 +133,7 @@ export default function ServicesPage() {
                 </div>
 
                 <div>
-                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">How Rapid-Revive Fixes It:</h4>
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">How Rapid Revive Fixes It:</h4>
                   <ol className="space-y-2 text-xs text-slate-300">
                     {guide.solutionSteps.map((step, idx) => (
                       <li key={idx} className="flex gap-3 items-start">

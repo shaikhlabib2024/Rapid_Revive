@@ -9,7 +9,7 @@ export default function HowItWorksPage() {
           ⚙️ Ecosystem & System Architecture
         </span>
         <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight">
-          How Rapid-Revive Serves Drivers & Workshop Owners
+          How Rapid Revive Serves Drivers & Workshop Owners
         </h1>
         <p className="max-w-2xl mx-auto text-sm text-slate-400 leading-relaxed">
           A digitized ecosystem designed to eliminate unpredictable roadside wait times, prevent scams, provide transparent distance pricing in ৳ BDT, and grow local garage businesses.
