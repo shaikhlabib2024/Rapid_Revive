@@ -10,7 +10,7 @@ const poolConfig = {
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'rapid_revive_db',
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: Number(process.env.DB_CONNECTION_LIMIT) || 5,
   queueLimit: 0
 };
 
