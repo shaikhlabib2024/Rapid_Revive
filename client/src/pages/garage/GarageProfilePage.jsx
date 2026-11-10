@@ -1,18 +1,63 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import { updateUserProfile, changeUserPassword } from '../../api/authApi';
-import { updateGarageLocation } from '../../api/garageApi';
+import { updateGarageLocation, getGarageStatus } from '../../api/garageApi';
+import { reverseGeocodeLocation } from '../../api/sosApi';
+import { useRealtimeEvents } from '../../hooks/useRealtimeEvents';
 
 export default function GarageProfilePage() {
   const { user, login } = useContext(AuthContext);
+  const garageId = user?.garageId || 1;
+
+  const [garageMeta, setGarageMeta] = useState({
+    tradeLicenseNo: user?.tradeLicenseNo || '',
+    nidNumber: user?.nidNumber || '',
+    isVerified: !!user?.isVerified,
+    verificationStatus: user?.verificationStatus || (user?.isVerified ? 'Approved' : 'Pending')
+  });
 
   const [garageForm, setGarageForm] = useState({
-    garageName: user?.garageName || 'MotorFix Workshop',
-    ownerName: user?.fullName || 'Kabir Hossain',
-    phoneNumber: user?.phoneNumber || '01711-234567',
-    address: user?.address || 'Block C, Main Road, Bashundhara R/A, Dhaka',
+    garageName: user?.garageName || '',
+    ownerName: user?.fullName || '',
+    phoneNumber: user?.phoneNumber || '',
+    address: user?.address || 'Bashundhara R/A, Dhaka',
     latitude: user?.latitude || 23.8103,
     longitude: user?.longitude || 90.4125
+  });
+
+  const loadLiveGarage = useCallback(async () => {
+    try {
+      const res = await getGarageStatus(garageId);
+      if (res.success && res.garage) {
+        const g = res.garage;
+        setGarageMeta({
+          tradeLicenseNo: g.trade_license_no,
+          nidNumber: g.nid_number,
+          isVerified: !!g.is_verified,
+          verificationStatus: g.verification_status || (g.is_verified ? 'Approved' : 'Pending')
+        });
+        setGarageForm({
+          garageName: g.garage_name || '',
+          ownerName: g.owner_name || user?.fullName || '',
+          phoneNumber: g.phone_number || user?.phoneNumber || '',
+          address: g.address || '',
+          latitude: parseFloat(g.latitude) || 23.8103,
+          longitude: parseFloat(g.longitude) || 90.4125
+        });
+      }
+    } catch {
+      // Keep current state if transient error
+    }
+  }, [garageId, user?.fullName, user?.phoneNumber]);
+
+  useEffect(() => {
+    loadLiveGarage();
+  }, [loadLiveGarage]);
+
+  useRealtimeEvents(['garage:updated'], (evt) => {
+    if (!evt.payload?.garageId || evt.payload.garageId === garageId) {
+      loadLiveGarage();
+    }
   });
 
   const [passForm, setPassForm] = useState({
@@ -25,24 +70,44 @@ export default function GarageProfilePage() {
   const [profileMsg, setProfileMsg] = useState('');
   const [passMsg, setPassMsg] = useState('');
 
-  // Pin current GPS coordinates to Google Map
+  // Fetch current workshop location name from Google Maps via GPS
   const handleCaptureGps = () => {
-    setLocationMsg('Detecting precise workshop GPS coordinates...');
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const lat = parseFloat(pos.coords.latitude.toFixed(6));
-          const lng = parseFloat(pos.coords.longitude.toFixed(6));
-          setGarageForm(prev => ({ ...prev, latitude: lat, longitude: lng }));
-          setLocationMsg(`✓ Pinned GPS to ${lat}, ${lng}! Remember to save changes.`);
-        },
-        () => {
-          // Fallback to Bashundhara coordinates
-          setGarageForm(prev => ({ ...prev, latitude: 23.8103, longitude: 90.4125 }));
-          setLocationMsg('✓ Defaulted to central Bashundhara R/A (23.8103, 90.4125).');
-        }
-      );
+    setLocationMsg('Fetching workshop location name from Google Maps...');
+    if (!navigator.geolocation) {
+      setLocationMsg('❌ Browser geolocation is unavailable. Enter your location name manually.');
+      return;
     }
+
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        try {
+          const res = await reverseGeocodeLocation(lat, lng);
+          if (res.success && res.locationName) {
+            setGarageForm((prev) => ({
+              ...prev,
+              address: res.locationName,
+              latitude: lat,
+              longitude: lng
+            }));
+            setLocationMsg('✓ Location name fetched from Google Maps! Click Save to update.');
+          } else {
+            setLocationMsg('❌ Could not resolve location name. Please enter it manually.');
+          }
+        } catch (err) {
+          const requiresKey = err.response?.data?.requiresApiKey;
+          setLocationMsg(
+            requiresKey
+              ? '⚠️ Google Maps Geocoding API key not configured yet in server/.env. Enter location name manually or add GOOGLE_MAPS_API_KEY.'
+              : '❌ Could not fetch location name from Google Maps. Please enter it manually.'
+          );
+        }
+      },
+      () => {
+        setLocationMsg('❌ Location permission denied. Please enter your workshop location name manually.');
+      }
+    );
   };
 
   const handleSaveLocation = async (e) => {
@@ -50,13 +115,18 @@ export default function GarageProfilePage() {
     try {
       await updateGarageLocation({
         garageId: user?.garageId || 1,
+        address: garageForm.address,
         latitude: garageForm.latitude,
-        longitude: garageForm.longitude,
-        address: garageForm.address
+        longitude: garageForm.longitude
       });
-      setLocationMsg('✓ Workshop location pinned and synchronized on the live map!');
+      const updated = {
+        ...user,
+        address: garageForm.address
+      };
+      login(updated, sessionStorage.getItem('token'));
+      setLocationMsg('✓ Workshop location name saved in database!');
     } catch (err) {
-      setLocationMsg('✓ Workshop location pinned and saved in local cache memory.');
+      setLocationMsg(`❌ ${err.response?.data?.message || 'Failed to save workshop location.'}`);
     }
   };
 
@@ -77,10 +147,10 @@ export default function GarageProfilePage() {
         garageName: garageForm.garageName,
         address: garageForm.address
       };
-      login(updated, localStorage.getItem('token') || 'demo_jwt_token_2026');
-      setProfileMsg('✓ Workshop profile details saved successfully.');
+      login(updated, sessionStorage.getItem('token'));
+      setProfileMsg('✓ Workshop profile details saved to database.');
     } catch (err) {
-      setProfileMsg('✓ Workshop profile details saved in local cache memory.');
+      setProfileMsg(`❌ ${err.response?.data?.message || 'Failed to update workshop profile.'}`);
     }
   };
 
@@ -103,11 +173,10 @@ export default function GarageProfilePage() {
         currentPassword: passForm.currentPassword,
         newPassword: passForm.newPassword
       });
-      setPassMsg('✓ Workshop account password updated successfully.');
+      setPassMsg('✓ Workshop account password updated in database.');
       setPassForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } catch (err) {
-      setPassMsg('✓ Password updated in local workshop credentials.');
-      setPassForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setPassMsg(`❌ ${err.response?.data?.message || 'Failed to update password.'}`);
     }
   };
 
@@ -133,7 +202,7 @@ export default function GarageProfilePage() {
               onClick={handleCaptureGps}
               className="text-[11px] font-bold bg-amber-950/80 border border-amber-700 text-amber-300 px-3 py-1.5 rounded-xl hover:bg-amber-900 transition"
             >
-              📡 Auto-Capture GPS
+              📡 Fetch Location Name
             </button>
           </div>
 
@@ -144,54 +213,50 @@ export default function GarageProfilePage() {
           )}
 
           <div>
-            <label className="text-xs font-semibold text-slate-300 block mb-1">Physical Workshop Address</label>
+            <label className="text-xs font-semibold text-slate-300 block mb-1">Workshop Location Name (from Google Maps)</label>
             <input
               required
               type="text"
               value={garageForm.address}
-              onChange={(e) => setGarageForm({ ...garageForm, address: e.target.value })}
+              onChange={(e) => setGarageForm({ ...garageForm, address: e.target.value, latitude: null, longitude: null })}
+              placeholder="Click Auto-Capture Location or enter workshop address"
               className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Latitude</label>
-              <input
-                required
-                type="number"
-                step="0.000001"
-                value={garageForm.latitude}
-                onChange={(e) => setGarageForm({ ...garageForm, latitude: parseFloat(e.target.value) || 0 })}
-                className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500"
-              />
+          {garageForm.address && (
+            <div className="w-full h-44 rounded-2xl overflow-hidden border border-slate-800">
+              <iframe
+                title="Workshop Google Map Preview"
+                width="100%"
+                height="100%"
+                frameBorder="0"
+                style={{ border: 0 }}
+                src={`https://maps.google.com/maps?q=${encodeURIComponent(garageForm.address)}&z=15&output=embed`}
+                allowFullScreen
+              ></iframe>
             </div>
-            <div>
-              <label className="text-xs font-semibold text-slate-300 block mb-1">Longitude</label>
-              <input
-                required
-                type="number"
-                step="0.000001"
-                value={garageForm.longitude}
-                onChange={(e) => setGarageForm({ ...garageForm, longitude: parseFloat(e.target.value) || 0 })}
-                className="w-full p-2.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white focus:outline-none focus:border-amber-500"
-              />
-            </div>
-          </div>
+          )}
 
           {/* VERIFICATION BADGES */}
           <div className="p-3.5 bg-slate-950/70 rounded-2xl border border-slate-800 text-xs space-y-1.5">
             <div className="flex justify-between items-center">
               <span className="text-slate-400">Trade License:</span>
-              <span className="font-mono font-bold text-amber-400">{user?.tradeLicenseNo || 'TL-2026-9901'}</span>
+              <span className="font-mono font-bold text-amber-400">{garageMeta.tradeLicenseNo || 'N/A'}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-slate-400">National ID (NID):</span>
-              <span className="font-mono font-bold text-blue-400">{user?.nidNumber || 'NID-1984269104882'}</span>
+              <span className="font-mono font-bold text-blue-400">{garageMeta.nidNumber || 'N/A'}</span>
             </div>
             <div className="flex justify-between items-center pt-1 border-t border-slate-800">
               <span className="text-slate-400">Status:</span>
-              <span className="text-emerald-400 font-bold">✓ Verified by System Admin</span>
+              {garageMeta.verificationStatus === 'Approved' || garageMeta.isVerified ? (
+                <span className="text-emerald-400 font-bold">✓ Verified by System Admin</span>
+              ) : garageMeta.verificationStatus === 'Rejected' ? (
+                <span className="text-rose-400 font-bold">✕ Verification Rejected by Admin</span>
+              ) : (
+                <span className="text-amber-400 font-bold">⏳ Pending Admin Verification</span>
+              )}
             </div>
           </div>
 
@@ -199,7 +264,7 @@ export default function GarageProfilePage() {
             type="submit"
             className="w-full py-2.5 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-xl text-xs transition shadow"
           >
-            Pin & Save Location on Map
+            Save Workshop Location Name
           </button>
         </form>
 

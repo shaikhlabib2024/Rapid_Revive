@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const { emitRealtimeEvent } = require('../services/realtime.service');
 
 exports.getUserVehicles = async (req, res) => {
   try {
@@ -25,6 +26,8 @@ exports.addVehicle = async (req, res) => {
       [userId || req.user?.userId || 1, makeModel, licensePlate, fuelType || 'Octane']
     );
 
+    emitRealtimeEvent('vehicle:updated', { userId: userId || req.user?.userId || 1 });
+
     res.status(201).json({
       success: true,
       vehicle: {
@@ -44,6 +47,7 @@ exports.deleteVehicle = async (req, res) => {
   try {
     const { vehicleId } = req.params;
     await db.query('DELETE FROM vehicles WHERE vehicle_id = ?', [vehicleId]);
+    emitRealtimeEvent('vehicle:updated', { vehicleId: Number(vehicleId) });
     res.json({ success: true, message: 'Vehicle deleted successfully.' });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });

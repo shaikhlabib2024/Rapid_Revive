@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash VARCHAR(255) NOT NULL,
     phone_number VARCHAR(20),
     role ENUM('car_owner', 'garage_owner', 'admin') DEFAULT 'car_owner',
+    status ENUM('Active', 'Suspended') DEFAULT 'Active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -23,7 +24,8 @@ CREATE TABLE IF NOT EXISTS garages (
     trade_license_no VARCHAR(100) NOT NULL,
     nid_number VARCHAR(50) NOT NULL,
     is_verified BOOLEAN DEFAULT FALSE,
-    is_online BOOLEAN DEFAULT TRUE,
+    verification_status ENUM('Pending', 'Approved', 'Rejected') DEFAULT 'Pending',
+    is_online BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
@@ -44,6 +46,7 @@ CREATE TABLE IF NOT EXISTS services (
     service_name VARCHAR(100) NOT NULL,
     description TEXT,
     base_price DECIMAL(10, 2) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
     FOREIGN KEY (garage_id) REFERENCES garages(garage_id) ON DELETE CASCADE
 );
 
@@ -58,7 +61,11 @@ CREATE TABLE IF NOT EXISTS service_requests (
     user_long DECIMAL(11, 8) NOT NULL,
     location_name VARCHAR(255) DEFAULT 'Bashundhara R/A, Dhaka',
     issue_description TEXT,
-    status ENUM('Pending', 'Accepted', 'Dispatched', 'Completed', 'Cancelled') DEFAULT 'Pending',
+    scheduled_date VARCHAR(20) NULL,
+    scheduled_time VARCHAR(50) NULL,
+    service_id INT NULL,
+    mechanic_name VARCHAR(100) NULL,
+    status ENUM('Pending', 'Accepted', 'Dispatched', 'On-Site', 'Completed', 'Cancelled') DEFAULT 'Pending',
     estimated_cost DECIMAL(10, 2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
@@ -84,4 +91,38 @@ CREATE TABLE IF NOT EXISTS reviews (
     rating INT CHECK (rating BETWEEN 1 AND 5),
     comment TEXT,
     FOREIGN KEY (request_id) REFERENCES service_requests(request_id) ON DELETE CASCADE
+);
+
+-- 8. PLATFORM SETTINGS TABLE
+CREATE TABLE IF NOT EXISTS platform_settings (
+    id INT PRIMARY KEY DEFAULT 1,
+    base_price DECIMAL(10, 2) NOT NULL DEFAULT 400.00,
+    per_km_rate DECIMAL(10, 2) NOT NULL DEFAULT 45.00,
+    search_radius_km INT NOT NULL DEFAULT 12,
+    platform_commission DECIMAL(5, 2) NOT NULL DEFAULT 10.00,
+    currency VARCHAR(10) NOT NULL DEFAULT 'BDT',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- 9. DISPATCHES RECORD / AUDIT LOG TABLE
+CREATE TABLE IF NOT EXISTS dispatches (
+    dispatch_id INT AUTO_INCREMENT PRIMARY KEY,
+    request_id INT NOT NULL,
+    customer_id INT NOT NULL,
+    customer_name VARCHAR(100) NOT NULL,
+    garage_id INT NULL,
+    garage_name VARCHAR(150) NULL,
+    request_type ENUM('SOS', 'Maintenance') DEFAULT 'SOS',
+    location_name VARCHAR(255) NOT NULL,
+    issue_description TEXT,
+    mechanic_name VARCHAR(100) NULL,
+    previous_status VARCHAR(30) NULL,
+    current_status ENUM('Pending', 'Accepted', 'Dispatched', 'On-Site', 'Completed', 'Cancelled') NOT NULL,
+    estimated_cost DECIMAL(10, 2) DEFAULT 0.00,
+    action_by_role ENUM('car_owner', 'garage_owner', 'admin', 'system') DEFAULT 'system',
+    notes VARCHAR(255) NULL,
+    recorded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (request_id) REFERENCES service_requests(request_id) ON DELETE CASCADE,
+    FOREIGN KEY (customer_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (garage_id) REFERENCES garages(garage_id) ON DELETE SET NULL
 );

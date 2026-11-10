@@ -6,9 +6,9 @@ export default function DriverProfilePage() {
   const { user, login } = useContext(AuthContext);
 
   const [profileForm, setProfileForm] = useState({
-    fullName: user?.fullName || 'Alex Rivera',
-    phoneNumber: user?.phoneNumber || '01922-334455',
-    email: user?.email || 'driver@rapidrevive.com'
+    fullName: user?.fullName || '',
+    phoneNumber: user?.phoneNumber || '',
+    email: user?.email || ''
   });
 
   const [passForm, setPassForm] = useState({
@@ -32,13 +32,10 @@ export default function DriverProfilePage() {
       });
       // Update local storage and context
       const updatedUser = { ...user, fullName: profileForm.fullName, phoneNumber: profileForm.phoneNumber };
-      login(updatedUser, localStorage.getItem('token') || 'demo_jwt_token_2026');
-      setProfileMsg('✓ Profile information updated and saved successfully.');
+      login(updatedUser, sessionStorage.getItem('token'));
+      setProfileMsg('✓ Profile information updated and saved to database.');
     } catch (err) {
-      // Local fallback
-      const updatedUser = { ...user, fullName: profileForm.fullName, phoneNumber: profileForm.phoneNumber };
-      login(updatedUser, localStorage.getItem('token') || 'demo_jwt_token_2026');
-      setProfileMsg('✓ Profile information saved to local memory.');
+      setProfileMsg(`❌ ${err.response?.data?.message || 'Failed to update profile.'}`);
     }
   };
 
@@ -61,12 +58,10 @@ export default function DriverProfilePage() {
         currentPassword: passForm.currentPassword,
         newPassword: passForm.newPassword
       });
-      setPassMsg('✓ Password updated successfully!');
+      setPassMsg('✓ Password updated successfully in database!');
       setPassForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
     } catch (err) {
-      // Local demo fallback
-      setPassMsg('✓ Password updated successfully in user credentials!');
-      setPassForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      setPassMsg(`❌ ${err.response?.data?.message || 'Failed to update password.'}`);
     }
   };
 

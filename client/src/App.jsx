@@ -34,6 +34,7 @@ import GarageProfilePage from './pages/garage/GarageProfilePage';
 // System Administrator Portal Pages
 import AdminHeroPage from './pages/admin/AdminHeroPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminDispatchesPage from './pages/admin/AdminDispatchesPage';
 import LicenseAudit from './pages/admin/LicenseAudit';
 import AdminUsersPage from './pages/admin/AdminUsersPage';
 import AdminSettingsPage from './pages/admin/AdminSettingsPage';
@@ -104,6 +105,7 @@ export default function App() {
           >
             <Route index element={<AdminHeroPage />} />
             <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="dispatches" element={<AdminDispatchesPage />} />
             <Route path="licenses" element={<LicenseAudit />} />
             <Route path="users" element={<AdminUsersPage />} />
             <Route path="settings" element={<AdminSettingsPage />} />

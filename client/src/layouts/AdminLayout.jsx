@@ -42,6 +42,9 @@ export default function AdminLayout() {
             <NavLink to="/admin/dashboard" className={navClass}>
               <span>📊</span> Analytics & KPIs
             </NavLink>
+            <NavLink to="/admin/dispatches" className={navClass}>
+              <span>🚨</span> Live Dispatches
+            </NavLink>
             <NavLink to="/admin/licenses" className={navClass}>
               <span>📋</span> License Audit Queue
             </NavLink>
@@ -88,6 +91,7 @@ export default function AdminLayout() {
           </Link>
           <div className="flex gap-2">
             <NavLink to="/admin" end className="text-xs font-bold px-2 py-1 bg-slate-800 rounded">Home</NavLink>
+            <NavLink to="/admin/dispatches" className="text-xs font-bold px-2 py-1 bg-slate-800 rounded">Live</NavLink>
             <NavLink to="/admin/licenses" className="text-xs font-bold px-2 py-1 bg-slate-800 rounded">Queue</NavLink>
             <button onClick={handleLogout} className="text-xs font-bold text-rose-400 px-2 py-1 bg-rose-950/40 rounded">Logout</button>
           </div>

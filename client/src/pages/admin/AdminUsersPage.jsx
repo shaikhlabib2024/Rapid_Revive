@@ -1,25 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { getAdminDirectory, updateUserStatus, verifyGarage } from '../../api/adminApi';
+import { useRealtimeEvents } from '../../hooks/useRealtimeEvents';
 
 export default function AdminUsersPage() {
   const [activeTab, setActiveTab] = useState('drivers');
-  const [users, setUsers] = useState([
-    { id: 101, name: 'Alex Rivera', email: 'alex@example.com', role: 'Car Owner', phone: '01922-334455', status: 'Active', vehicles: 2 },
-    { id: 102, name: 'Tariq Hasan', email: 'tariq@example.com', role: 'Car Owner', phone: '01711-998877', status: 'Active', vehicles: 1 },
-    { id: 103, name: 'Farhan Kabir', email: 'farhan@example.com', role: 'Car Owner', phone: '01833-221100', status: 'Active', vehicles: 3 }
-  ]);
+  const [users, setUsers] = useState([]);
+  const [garages, setGarages] = useState([]);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  const [garages, setGarages] = useState([
-    { id: 201, name: 'MotorFix Workshop', owner: 'Kabir Hossain', address: 'Block C, Bashundhara', status: 'Verified', license: 'TL-2026-9901', nid: 'NID-1985261049912' },
-    { id: 202, name: 'Apex Auto Care', owner: 'Mahmud Hasan', address: '300 Feet Road, Dhaka', status: 'Verified', license: 'TL-2026-9043', nid: 'NID-1991261099431' },
-    { id: 203, name: 'Dhaka City Towing', owner: 'Shakil Mia', address: 'Block G, Bashundhara', status: 'Under Review', license: 'TL-2026-8812', nid: 'NID-1980261088319' }
-  ]);
+  const loadDirectory = useCallback(async () => {
+    try {
+      const res = await getAdminDirectory();
+      if (res.success) {
+        setUsers(res.users || []);
+        setGarages(res.garages || []);
+        setErrorMsg('');
+      }
+    } catch (err) {
+      setErrorMsg(err.response?.data?.message || 'Failed to load user and workshop directory.');
+    }
+  }, []);
 
-  const toggleUserStatus = (id) => {
-    setUsers(users.map(u => u.id === id ? { ...u, status: u.status === 'Active' ? 'Suspended' : 'Active' } : u));
+  useEffect(() => {
+    loadDirectory();
+  }, [loadDirectory]);
+
+  useRealtimeEvents(['user:updated', 'garage:updated', 'vehicle:updated'], loadDirectory);
+
+  const handleToggleUserStatus = async (u) => {
+    const nextStatus = u.status === 'Suspended' ? 'Active' : 'Suspended';
+    try {
+      await updateUserStatus(u.user_id, nextStatus);
+      setUsers((prev) =>
+        prev.map((row) => (row.user_id === u.user_id ? { ...row, status: nextStatus } : row))
+      );
+    } catch (err) {
+      setErrorMsg(err.response?.data?.message || 'Failed to update user status.');
+    }
   };
 
-  const toggleGarageStatus = (id) => {
-    setGarages(garages.map(g => g.id === id ? { ...g, status: g.status === 'Verified' ? 'Suspended' : 'Verified' } : g));
+  const handleToggleGarageStatus = async (g) => {
+    const nextApprove = !g.is_verified;
+    try {
+      await verifyGarage(g.garage_id, nextApprove);
+      setGarages((prev) =>
+        prev.map((row) =>
+          row.garage_id === g.garage_id ? { ...row, is_verified: nextApprove ? 1 : 0 } : row
+        )
+      );
+    } catch (err) {
+      setErrorMsg(err.response?.data?.message || 'Failed to update workshop status.');
+    }
   };
 
   return (
@@ -27,7 +58,9 @@ export default function AdminUsersPage() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold text-white">Platform Users & Garage Directory</h1>
-          <p className="text-xs text-slate-400 mt-1">Supervise registered driver accounts and verified partner workshops.</p>
+          <p className="text-xs text-slate-400 mt-1">
+            Live registered driver accounts and partner workshops from MySQL.
+          </p>
         </div>
 
         <div className="flex bg-slate-900 border border-slate-800 p-1 rounded-2xl">
@@ -50,94 +83,104 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      {activeTab === 'drivers' ? (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl shadow-xl overflow-hidden">
+      {errorMsg && (
+        <div className="p-3 bg-rose-950/70 border border-rose-800 text-rose-200 rounded-xl text-xs font-semibold">
+          ⚠️ {errorMsg}
+        </div>
+      )}
+
+      <div className="bg-slate-900 border border-slate-800 rounded-3xl shadow-xl overflow-hidden">
+        {activeTab === 'drivers' ? (
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-bold">
+            <thead className="bg-slate-950/80 border-b border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
               <tr>
-                <th className="p-4">User ID</th>
-                <th className="p-4">Driver Name</th>
-                <th className="p-4">Email</th>
+                <th className="p-4">Name & Email</th>
                 <th className="p-4">Phone</th>
                 <th className="p-4">Vehicles</th>
                 <th className="p-4">Status</th>
-                <th className="p-4 text-right">Moderation</th>
+                <th className="p-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800 text-slate-300">
+            <tbody className="divide-y divide-slate-800/80">
               {users.map((u) => (
-                <tr key={u.id} className="hover:bg-slate-800/40 transition">
-                  <td className="p-4 font-mono font-bold text-white">#{u.id}</td>
-                  <td className="p-4 font-bold text-white">{u.name}</td>
-                  <td className="p-4 text-slate-400">{u.email}</td>
-                  <td className="p-4 text-slate-300">{u.phone}</td>
-                  <td className="p-4 text-slate-300">{u.vehicles} linked</td>
+                <tr key={u.user_id} className="hover:bg-slate-800/30 transition">
                   <td className="p-4">
-                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
-                      u.status === 'Active' ? 'bg-emerald-950/80 border-emerald-700 text-emerald-400' : 'bg-rose-950/80 border-rose-700 text-rose-400'
+                    <p className="font-bold text-white">{u.full_name}</p>
+                    <p className="text-[11px] text-slate-400">{u.email}</p>
+                  </td>
+                  <td className="p-4 font-mono text-slate-300">{u.phone_number || 'N/A'}</td>
+                  <td className="p-4 text-slate-300">{u.vehicle_count} Linked</td>
+                  <td className="p-4">
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                      u.status !== 'Suspended'
+                        ? 'bg-emerald-950 text-emerald-400 border-emerald-800'
+                        : 'bg-rose-950 text-rose-400 border-rose-800'
                     }`}>
-                      {u.status}
+                      {u.status || 'Active'}
                     </span>
                   </td>
                   <td className="p-4 text-right">
                     <button
-                      onClick={() => toggleUserStatus(u.id)}
-                      className="text-[11px] font-bold px-3 py-1 rounded-xl transition border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300"
+                      onClick={() => handleToggleUserStatus(u)}
+                      className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-bold transition"
                     >
-                      {u.status === 'Active' ? 'Suspend' : 'Activate'}
+                      {u.status !== 'Suspended' ? 'Suspend' : 'Activate'}
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-      ) : (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl shadow-xl overflow-hidden">
+        ) : (
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase font-bold">
+            <thead className="bg-slate-950/80 border-b border-slate-800 text-slate-400 font-bold uppercase tracking-wider">
               <tr>
-                <th className="p-4">Garage ID</th>
-                <th className="p-4">Workshop Name</th>
-                <th className="p-4">Owner</th>
+                <th className="p-4">Workshop & Owner</th>
                 <th className="p-4">Trade License & NID</th>
-                <th className="p-4">Address</th>
+                <th className="p-4">Location</th>
                 <th className="p-4">Status</th>
-                <th className="p-4 text-right">Moderation</th>
+                <th className="p-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800 text-slate-300">
+            <tbody className="divide-y divide-slate-800/80">
               {garages.map((g) => (
-                <tr key={g.id} className="hover:bg-slate-800/40 transition">
-                  <td className="p-4 font-mono font-bold text-white">#{g.id}</td>
-                  <td className="p-4 font-bold text-white">{g.name}</td>
-                  <td className="p-4 text-slate-300">{g.owner}</td>
-                  <td className="p-4 space-y-1">
-                    <span className="font-mono text-amber-400 font-bold block text-[11px]">{g.license}</span>
-                    <span className="font-mono text-blue-400 font-bold block text-[11px]">{g.nid}</span>
-                  </td>
-                  <td className="p-4 text-slate-400">{g.address}</td>
+                <tr key={g.garage_id} className="hover:bg-slate-800/30 transition">
                   <td className="p-4">
-                    <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
-                      g.status === 'Verified' ? 'bg-emerald-950/80 border-emerald-700 text-emerald-400' : 'bg-amber-950/80 border-amber-700 text-amber-400'
+                    <p className="font-bold text-white">{g.garage_name}</p>
+                    <p className="text-[11px] text-slate-400">
+                      Owner: {g.owner_name} ({g.phone_number || g.email})
+                    </p>
+                  </td>
+                  <td className="p-4 space-y-1">
+                    <span className="font-mono text-amber-400 block">{g.trade_license_no}</span>
+                    <span className="font-mono text-blue-400 text-[11px] block">{g.nid_number}</span>
+                  </td>
+                  <td className="p-4 text-slate-300">{g.address}</td>
+                  <td className="p-4">
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                      g.is_verified
+                        ? 'bg-emerald-950 text-emerald-400 border-emerald-800'
+                        : g.verification_status === 'Rejected'
+                        ? 'bg-rose-950 text-rose-400 border-rose-800'
+                        : 'bg-amber-950 text-amber-400 border-amber-800'
                     }`}>
-                      {g.status}
+                      {g.is_verified ? 'Verified' : g.verification_status || 'Pending'}
                     </span>
                   </td>
                   <td className="p-4 text-right">
                     <button
-                      onClick={() => toggleGarageStatus(g.id)}
-                      className="text-[11px] font-bold px-3 py-1 rounded-xl transition border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300"
+                      onClick={() => handleToggleGarageStatus(g)}
+                      className="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-bold transition"
                     >
-                      {g.status === 'Verified' ? 'Revoke' : 'Re-verify'}
+                      {g.is_verified ? 'Revoke' : 'Verify'}
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

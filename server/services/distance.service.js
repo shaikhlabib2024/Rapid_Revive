@@ -29,13 +29,13 @@ function calculateHaversineDistance(lat1, lon1, lat2, lon2) {
 
 /**
  * Calculates estimated fare in Bangladeshi Taka (BDT ৳)
- * Base Fee: ৳400.00 | Per-KM Rate: ৳45.00
+ * Base Fee: configurable (default ৳400.00) | Per-KM Rate: configurable (default ৳45.00)
  */
-function calculateFare(basePrice = 400.00, distanceKm = 0) {
+function calculateFare(basePrice = 400.00, distanceKm = 0, perKmRate = 45.00) {
   const numBase = parseFloat(basePrice) || 400.00;
   const numDist = parseFloat(distanceKm) || 0.0;
-  const PER_KM_RATE = 45.00; // 45 BDT per kilometer
-  const total = numBase + numDist * PER_KM_RATE;
+  const numRate = parseFloat(perKmRate) || 45.00;
+  const total = numBase + numDist * numRate;
   return parseFloat(total.toFixed(2));
 }
 

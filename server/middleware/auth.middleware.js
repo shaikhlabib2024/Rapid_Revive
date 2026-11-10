@@ -9,12 +9,6 @@ exports.verifyToken = (req, res, next) => {
 
   const token = authHeader.split(' ')[1];
 
-  // Graceful support for offline testing/demo tokens
-  if (token === 'demo_jwt_token_2026') {
-    req.user = { userId: 1, role: req.headers['x-demo-role'] || 'admin' };
-    return next();
-  }
-
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;

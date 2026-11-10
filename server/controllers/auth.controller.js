@@ -1,6 +1,7 @@
 const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { emitRealtimeEvent } = require('../services/realtime.service');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'rapid_revive_super_secret_jwt_key_2026';
 
@@ -20,33 +21,62 @@ exports.register = async (req, res) => {
     );
 
     const userId = userResult.insertId;
+    let garagePayload = {};
 
     if (role === 'garage_owner') {
       const randomOffsetLat = (Math.random() - 0.5) * 0.015;
       const randomOffsetLng = (Math.random() - 0.5) * 0.015;
       const garageLat = latitude ? parseFloat(latitude) : (23.8103 + randomOffsetLat);
       const garageLng = longitude ? parseFloat(longitude) : (90.4125 + randomOffsetLng);
+      const resolvedGarageName = garageName || fullName + "'s Workshop";
+      const resolvedAddress = address || 'Bashundhara R/A, Dhaka';
+      const resolvedLicense = tradeLicenseNo || `TL-${Date.now().toString().slice(-4)}`;
+      const resolvedNid = nidNumber || `NID-${Math.floor(1000000000 + Math.random() * 9000000000)}`;
 
-      await db.query(
-        'INSERT INTO garages (user_id, garage_name, address, latitude, longitude, trade_license_no, nid_number, is_verified, is_online) VALUES (?, ?, ?, ?, ?, ?, ?, FALSE, TRUE)',
+      const [garageResult] = await db.query(
+        "INSERT INTO garages (user_id, garage_name, address, latitude, longitude, trade_license_no, nid_number, is_verified, verification_status, is_online) VALUES (?, ?, ?, ?, ?, ?, ?, FALSE, 'Pending', FALSE)",
         [
-          userId, 
-          garageName || fullName + "'s Workshop", 
-          address || 'Bashundhara R/A, Dhaka', 
-          garageLat, 
-          garageLng, 
-          tradeLicenseNo || `TL-${Date.now().toString().slice(-4)}`,
-          nidNumber || `NID-${Math.floor(1000000000 + Math.random() * 9000000000)}`
+          userId,
+          resolvedGarageName,
+          resolvedAddress,
+          garageLat,
+          garageLng,
+          resolvedLicense,
+          resolvedNid
         ]
       );
+
+      garagePayload = {
+        garageId: garageResult.insertId,
+        garageName: resolvedGarageName,
+        address: resolvedAddress,
+        latitude: garageLat,
+        longitude: garageLng,
+        tradeLicenseNo: resolvedLicense,
+        nidNumber: resolvedNid,
+        isVerified: false,
+        verificationStatus: 'Pending',
+        isOnline: false
+      };
+
+      emitRealtimeEvent('garage:updated', { garageId: garageResult.insertId, action: 'registered' });
     }
+
+    emitRealtimeEvent('user:updated', { userId, action: 'registered' });
 
     const token = jwt.sign({ userId, role: role || 'car_owner' }, JWT_SECRET, { expiresIn: '7d' });
 
     res.status(201).json({
       success: true,
       token,
-      user: { id: userId, fullName, email, phoneNumber: phoneNumber || '', role: role || 'car_owner' }
+      user: {
+        id: userId,
+        fullName,
+        email,
+        phoneNumber: phoneNumber || '',
+        role: role || 'car_owner',
+        ...garagePayload
+      }
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -63,6 +93,10 @@ exports.login = async (req, res) => {
     }
 
     const user = users[0];
+    if (user.status === 'Suspended') {
+      return res.status(403).json({ success: false, message: 'Your account has been suspended by an administrator.' });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
       return res.status(401).json({ success: false, message: 'Invalid credentials.' });
@@ -93,6 +127,7 @@ exports.login = async (req, res) => {
         tradeLicenseNo: garageDetails?.trade_license_no,
         nidNumber: garageDetails?.nid_number,
         isVerified: !!garageDetails?.is_verified,
+        verificationStatus: garageDetails?.verification_status || (garageDetails?.is_verified ? 'Approved' : 'Pending'),
         isOnline: !!garageDetails?.is_online
       }
     });
@@ -117,7 +152,10 @@ exports.updateProfile = async (req, res) => {
         'UPDATE garages SET garage_name = COALESCE(?, garage_name), address = COALESCE(?, address) WHERE user_id = ?',
         [garageName, address, userId]
       );
+      emitRealtimeEvent('garage:updated', { userId });
     }
+
+    emitRealtimeEvent('user:updated', { userId });
 
     res.json({
       success: true,

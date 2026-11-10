@@ -7,27 +7,27 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Restore session on page load
-    const savedUser = localStorage.getItem('user');
+    // Restore per-tab session on page load
+    const savedUser = sessionStorage.getItem('user');
     if (savedUser) {
       try {
         setUser(JSON.parse(savedUser));
       } catch (err) {
-        localStorage.removeItem('user');
+        sessionStorage.removeItem('user');
       }
     }
     setLoading(false);
   }, []);
 
   const login = (userData, token) => {
-    localStorage.setItem('user', JSON.stringify(userData));
-    if (token) localStorage.setItem('token', token);
+    sessionStorage.setItem('user', JSON.stringify(userData));
+    if (token) sessionStorage.setItem('token', token);
     setUser(userData);
   };
 
   const logout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('user');
+    sessionStorage.removeItem('token');
     setUser(null);
   };
 
