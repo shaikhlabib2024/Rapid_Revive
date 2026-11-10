@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import logoWhite from '../assets/logo-white.png';
 
 export default function AdminLayout() {
   const { user, logout } = useContext(AuthContext);
@@ -25,9 +26,9 @@ export default function AdminLayout() {
         <div className="space-y-6">
           {/* BRAND & SHIELD */}
           <div>
-            <Link to="/admin" className="flex items-center gap-2 font-black text-lg text-white tracking-tight">
-              <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-              Rapid-Revive
+            <Link to="/admin" className="flex items-center gap-2.5 font-black text-lg text-white tracking-tight">
+              <img src={logoWhite} alt="Rapid-Revive logo" className="h-7 w-auto object-contain shrink-0" />
+              <span>Rapid-Revive</span>
             </Link>
             <span className="inline-block mt-1 bg-blue-950/80 border border-blue-800/80 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
               🛡️ Master Admin Panel
@@ -86,8 +87,9 @@ export default function AdminLayout() {
       <div className="flex-grow flex flex-col min-w-0">
         {/* MOBILE ADMIN TOPBAR */}
         <header className="lg:hidden bg-slate-900 border-b border-slate-800 px-6 h-16 flex items-center justify-between">
-          <Link to="/admin" className="font-black text-white text-base">
-            🛡️ Rapid-Revive Admin
+          <Link to="/admin" className="flex items-center gap-2 font-black text-white text-base">
+            <img src={logoWhite} alt="Rapid-Revive logo" className="h-6 w-auto object-contain shrink-0" />
+            <span>Rapid-Revive Admin</span>
           </Link>
           <div className="flex gap-2">
             <NavLink to="/admin" end className="text-xs font-bold px-2 py-1 bg-slate-800 rounded">Home</NavLink>

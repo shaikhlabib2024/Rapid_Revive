@@ -1,11 +1,15 @@
 import React from 'react';
+import logoWhite from '../assets/logo-white.png';
 
 export default function Footer() {
   return (
     <footer className="bg-slate-950 text-slate-400 py-10 border-t border-slate-900 text-xs">
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div>
-          <h3 className="text-white font-bold text-base mb-2">⚡ Rapid-Revive</h3>
+          <h3 className="flex items-center gap-2 text-white font-bold text-base mb-2">
+            <img src={logoWhite} alt="Rapid-Revive logo" className="h-6 w-auto object-contain shrink-0" />
+            <span>Rapid-Revive</span>
+          </h3>
           <p className="leading-relaxed">With You Through Every Drive and Detour. Digitizing roadside assistance & routine vehicle maintenance.</p>
         </div>
         <div>

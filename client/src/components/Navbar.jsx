@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import logoWhite from '../assets/logo-white.png';
 
 export default function Navbar() {
   const { user, logout } = useContext(AuthContext);
@@ -21,9 +22,9 @@ export default function Navbar() {
   return (
     <nav className="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 font-black text-lg text-white tracking-tight">
-          <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
-          Rapid-Revive
+        <Link to="/" className="flex items-center gap-2.5 font-black text-lg text-white tracking-tight">
+          <img src={logoWhite} alt="Rapid-Revive logo" className="h-7 w-auto object-contain shrink-0" />
+          <span>Rapid-Revive</span>
         </Link>
         
         <div className="flex items-center gap-6 text-xs text-slate-300 font-semibold">

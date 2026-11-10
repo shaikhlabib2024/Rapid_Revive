@@ -3,6 +3,7 @@ import { NavLink, Link, Outlet, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { getGarageStatus, toggleOnlineStatus } from '../api/garageApi';
 import { useRealtimeEvents } from '../hooks/useRealtimeEvents';
+import logoWhite from '../assets/logo-white.png';
 
 export default function GarageLayout() {
   const { user, logout } = useContext(AuthContext);
@@ -68,9 +69,9 @@ export default function GarageLayout() {
       <header className="bg-slate-900 border-b border-slate-800 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/garage" className="flex items-center gap-2 font-black text-lg text-white tracking-tight">
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-              Rapid-Revive
+            <Link to="/garage" className="flex items-center gap-2.5 font-black text-lg text-white tracking-tight">
+              <img src={logoWhite} alt="Rapid-Revive logo" className="h-7 w-auto object-contain shrink-0" />
+              <span>Rapid-Revive</span>
             </Link>
             <span className="bg-amber-950/80 border border-amber-800/80 text-amber-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
               Workshop Console
